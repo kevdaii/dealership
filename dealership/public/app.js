@@ -157,12 +157,15 @@ async function addCar(make, model, year) {
 async function deleteCar(id) {
     const statusEl = document.getElementById("status");
     try {
+
         const res = await fetch(`/cars/${id}`, { method: "DELETE" });
-        if (res.status == 204) {
-            statusEl.textContent = `Car ${id} removed.`;
+
+        if(res.status === 204){
+            statusEl.textContent = `Car with the ${id} removed`;
         } else {
             throw new Error(msg.error || `HTTP ${res.status}`);
         }
+
     } catch (err) {
         console.error(err);
         statusEl.textContent = `Error while removing: ${err.message}`;

@@ -94,17 +94,17 @@ app.put("/cars/:id", (req: Request, res: Response) => {
 })
 
 app.delete("/cars/:id", (req: Request, res: Response) => {
+	const id = parseInt(req.params.id);
+	const pos = cars.findIndex(c => c.id === id);
+	
+	if(pos === -1){
+		return res.status(404).json({error: "Car not found"});
+	}
 
-	const searchId = parseInt(req.params.id);
-	
-	const car = cars.find(c => c.id === searchId);
-	
-	cars.splice(searchId - 1, 1);
-	
-	res.json({Removed: car});
+	cars.splice(pos, 1);
 	return res.status(204).send();
     //curl -X DELETE http://localhost:3000/cars/3 -H "Content-Type:application/json"
-})
+});
 
 // Den Server starten
 app.listen(port, () => {
