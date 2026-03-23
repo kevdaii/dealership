@@ -59,3 +59,12 @@ input {
 #add-btn:hover {
 	background: #005fcc;
 }
+
+.delete-btn{
+    backgroundColor: "#ff4d4d"; 
+    color: "white";
+    border: "none";
+    padding: "5px 10px";
+    borderRadius: "4px";
+    cursor: "pointer";
+}

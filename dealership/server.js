@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Hardcoded Cars DB json
 const cars = [
-  { id: 1, model: "S200", make: "Honda", year: 2003 },
+  { id: 1, model: "S2000", make: "Honda", year: 2003 },
   { id: 2, model: "350Z", make: "Nissan", year: 2006 },
   { id: 3, model: "RX-7 FD", make: "Mazda", year: 1999 }
 ];
