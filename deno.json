@@ -1,0 +1,15 @@
+{
+  "tasks": {
+    "dev": "deno --watch -A --env-file server.ts",
+    "pv": "deno -A prisma validate",
+    "pg": "deno -A prisma generate",
+    "pmd": "deno -A prisma migrate dev",
+    "pms": "deno -A prisma migrate status",
+    "seed": "deno -A --env-file ./prisma/seed.ts"
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1",
+    "@std/path": "jsr:@std/path@^1.1.4",
+    "express": "npm:express@^5.2.1"
+  }
+}

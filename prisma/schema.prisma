@@ -1,0 +1,17 @@
+generator client {
+    provider = "prisma-client"
+    output   = "../generated"
+    runtime  = "deno"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = "file:../cars.db"
+}
+
+model Cars {
+    id    Int    @id @default(autoincrement())
+    make  String
+    model String
+    year  Int
+}
