@@ -3,11 +3,8 @@
 const express = require("express"); 
 const app = express(); // Erstellt unsere eigentliche Server-App
 const port = 3000; // Der "Kanal" (Port), auf dem unser Server später lauscht
-
-
 // Wichtig für später: Damit unser Server JSON-Daten (z.B. new Cars) verstehen kann
 app.use(express.json());
-
 
 // Frontend Access
 const path = require("path");

@@ -7,14 +7,12 @@ async function fetchCars() {
     try {
         statusEl.textContent = "Status: Loading Data...";
         const response = await fetch("/cars");
-        if (!response.ok) {
-            throw new Error(`HTTP Fehler: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP Fehler: ${response.status}`);
         const cars = await response.json();
         // Die Tabelle im HTML komplett leeren, bevor wir sie neu befüllen
         tbody.innerHTML = "";
 
-        // 5. Mit einer Schleife durch jedes Auto im Array gehen
+        // Mit einer Schleife durch jedes Auto im Array gehen
         for (const car of cars) {
             const tr = document.createElement("tr");
             const tdId = document.createElement("td");
@@ -39,7 +37,7 @@ async function fetchCars() {
 
                 const yearInput = document.createElement("input");
                 yearInput.type = "number";
-                yearInput.value = parseInt(car.year);
+                yearInput.value = car.year;
                 yearInput.className = "input-sm";
 
                 tdMake.appendChild(makeInput);
@@ -50,14 +48,14 @@ async function fetchCars() {
                 confirmBtn.textContent = "Confirm";
                 confirmBtn.className = "confirm-btn";
                 confirmBtn.onclick = async () => {
-                    if(!makeInput.value.trim() || !modelInput.value.trim() || !yearInput){
+                    if(!makeInput.value.trim() || !modelInput.value.trim() || !yearInput.value.trim()){
                         document.getElementById("status").textContent = "Status: Make, Model & Year are required!";
                         return;
                     }else{
                         await updateCar(car.id, {
-                        make: makeInput.value.trim(),
-                        model: modelInput.value.trimEnd(),
-                        year: parseInt(yearInput)});
+                            make: makeInput.value.trim(),
+                            model: modelInput.value.trimEnd(),
+                            year: yearInput.value.trim()});
                         editingId = null;
                         await fetchCars();
                     }
@@ -160,7 +158,7 @@ async function deleteCar(id) {
     const statusEl = document.getElementById("status");
     try {
         const res = await fetch(`/cars/${id}`, { method: "DELETE" });
-        if (res.status === 204) {
+        if (res.status == 204) {
             statusEl.textContent = `Car ${id} removed.`;
         } else {
             throw new Error(msg.error || `HTTP ${res.status}`);
@@ -181,7 +179,7 @@ async function updateCar(id, data){
         });
         if(!res.ok){
             const msg = await res.json().catch( () => ({}));
-            throw new Error(msg.error || `HHTP $(res.status)`);
+            throw new Error(msg.error || `HTTP $(res.status)`);
         }
         statusEl.textContent = `Car ${id} has been updated!`;
     } catch (err) {
