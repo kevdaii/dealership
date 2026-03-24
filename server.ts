@@ -63,7 +63,7 @@ app.post("/cars/", authMiddleware, async (req: Request, res: Response) => {
 	};
 
 	const newCar = await prisma.cars.create({
-		data: {make, model, year}
+		data: {make, model, year: Number(year)}
 	});
 	res.status(201).json(newCar);
 })
