@@ -163,6 +163,7 @@ async function deleteCar(id) {
         if(res.status === 204){
             statusEl.textContent = `Car with the ${id} removed`;
         } else {
+            const msg = await res.json().catch(() => ({}));
             throw new Error(msg.error || `HTTP ${res.status}`);
         }
 
@@ -193,4 +194,4 @@ async function updateCar(id, data){
 
 // Wenn die Webseite (das HTML) komplett vom Browser geladen wurde, 
 // rufen wir automatisch unsere Funktion auf, um die Bücher zu holen!
-window.addEventListener("DOMContentLoaded", fetchCars);
+globalThis.addEventListener("DOMContentLoaded", fetchCars);

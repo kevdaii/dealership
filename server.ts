@@ -38,7 +38,7 @@ const prisma = new PrismaClient();
 
 app.get("/cars", async (_req: Request, res: Response) => {
 	const cars = await prisma.cars.findMany();
-  	res.json(cars);
+	res.json(cars);
 });
 
 app.get("/cars/:id", async (req: Request, res: Response) => {
