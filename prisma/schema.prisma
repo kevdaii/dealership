@@ -1,12 +1,12 @@
 generator client {
     provider = "prisma-client"
-    runtime  = "deno"
-    output   = "../generated"
+    runtime  = "deno" // tells Prisma to generate Deno-compatible code
+    output   = "../generated" // where the generated client goes
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+    provider = "postgresql" // database type
+    url      = env("DATABASE_URL") // reads from .env
 }
 
 model Cars {
