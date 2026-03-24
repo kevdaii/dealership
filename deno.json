@@ -5,7 +5,8 @@
     "pg": "deno -A prisma generate",
     "pmd": "deno -A prisma migrate dev",
     "pms": "deno -A prisma migrate status",
-    "seed": "deno -A --env-file ./prisma/seed.ts"
+    "seed": "deno -A --env-file ./prisma/seed.ts",
+    "prisma:reset": "deno -A prisma migrate reset"
   },
   "imports": {
     "@prisma/client": "npm:@prisma/client@^6.19.2",

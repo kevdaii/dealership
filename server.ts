@@ -76,7 +76,7 @@ app.patch("/cars/:id", async (req: Request, res: Response) => {
 	try {
 		const updatedCar = await prisma.cars.update({where: { id }, data});
 
-    	res.json(updatedCar);
+		res.json(updatedCar);
 	} catch {
 		return res.status(404).json({ error: "Car not found" });
 	}

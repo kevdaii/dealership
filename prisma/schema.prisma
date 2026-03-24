@@ -1,12 +1,12 @@
 generator client {
     provider = "prisma-client"
-    output   = "../generated"
     runtime  = "deno"
+    output   = "../generated"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = "file:../cars.db"
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model Cars {
