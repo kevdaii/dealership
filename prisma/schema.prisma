@@ -10,8 +10,9 @@ datasource db {
 }
 
 model Cars {
-    id    Int    @id @default(autoincrement())
+    id    Int     @id @default(autoincrement())
     make  String
     model String
     year  Int
+    vin   String? @unique
 }
