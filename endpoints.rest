@@ -1,0 +1,27 @@
+GET http://localhost:3000/cars
+
+###
+GET http://localhost:3000/cars/-3
+
+###
+POST http://localhost:3000/cars
+Content-Type: application/json
+
+{
+  "make": "Subaru",
+  "model": "BRZ",
+  "year": 2023
+}
+
+###
+PATCH http://localhost:3000/ccars/-1
+Content-Type: application/json
+
+{
+  "make": "Nissan",
+  "model": "GT-R35",
+  "year": 2024
+}
+
+###
+DELETE http://localhost:3000/cars/-2

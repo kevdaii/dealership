@@ -3,6 +3,7 @@ import process from "node:process";
 import { fromFileUrl } from "@std/path";
 import { dirname } from "@std/path";
 import path from "node:path";
+import { PrismaClient } from "./generated/client.ts";
 
 const __dirname = dirname(fromFileUrl(import.meta.url));
 const app = express();
@@ -11,102 +12,89 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
 
-// Hardcoded Cars DB json
-const cars = [
-  { id: 1, model: "S2000", make: "Honda", year: 2003 },
-  { id: 2, model: "350Z", make: "Nissan", year: 2006 },
-  { id: 3, model: "RX-7 FD", make: "Mazda", year: 1999 }
-];
+const prisma = new PrismaClient();
 
-app.get("/cars", (_req: Request, res: Response) => {
-  res.json(cars);
+const cars = await prisma.cars.findMany();
+
+app.get("/cars", async (_req: Request, res: Response) => {
+	const cars = await prisma.cars.findMany();
+  	res.json(cars);
 });
 
-app.get("/cars/:id", (req: Request, res: Response) => {
+app.get("/cars/:id", async (req: Request, res: Response) => {
 
-	const searchId = parseInt(req.params.id); 
-	const findCar = cars.find(car => car.id === searchId); 
+	const id = parseInt(req.params.id); 
+	const car = await prisma.cars.findUnique({
+		where: { id },
+	}); 
 
-	if(!findCar){
+	if(!car){
 	return res.status(404).json({error:"Car not found"}); 
 	};
 
-res.json(findCar);
+res.json(car);
 
 });
 
-app.post("/cars/", (req: Request, res: Response) => {
+app.post("/cars/", async (req: Request, res: Response) => {
 	const { model, make, year} = req.body;
 	if(!model || !make || !year){
 	return res.status(404).json({error:"Model, Make & Year Are Required!"})
 	};
-	const newId = cars.length > 0 ? cars[cars.length - 1].id + 1 : 1;
-	const newCar = {
-		id: newId,
-		model: model,
-		make: make,
-		year: year
-	}
-	cars.push(newCar);
+
+	const newCar = await prisma.cars.create({
+		data: {make, model, year}
+	});
 	res.status(201).json(newCar);
-    // test in terminal
-    // curl -X POST http://localhost:3000/cars/ -H "Content-Type:application/json" -d '{"model":"BRZ","make":"Subaru","year":"2023"}'
 })
 
-app.put("/cars/:id", (req: Request, res: Response) => {
+app.put("/cars/:id", async (req: Request, res: Response) => {
+	const id = parseInt(req.params.id);
 	const { model, make, year} = req.body;
 	if(!model || !make || !year){
 	return res.status(404).json({error:"Model, Make & Year Are Required!"})
 	};
 	
-	const searchId = parseInt(req.params.id);
-	const pos = cars.findIndex(car => car.id === searchId);
-	if(pos <= -1){
-		return res.status(404).json({error: "Car not found!"})
+	try {
+		const updatedCar = await prisma.cars.update({where: { id }, data: { make, model, year: Number(year)}});
+		res.json(updatedCar);
+	} catch {
+    return res.status(404).json({ error: "Car not found" });
 	}
-	
-	cars[pos] = {
-		id: searchId,
-		model: model,
-		make: make,
-		year: year
-	}
-	res.json(cars[pos]); // gibt eine json datei über
-    //curl -X PUT http://localhost:3000/cars/1 -H "Content-Type:application/json" -d '{"model":"Supra MK4","make":"Toyota","year":1998}'
 });
 
- app.patch("/cars/:id", (req: Request, res: Response) => {
-	const searchId = parseInt(req.params.id);
-	const {make, model, year} = req.body;
-	const car = cars.find(car => car.id === searchId);
-	
-	if(!car){
-	return res.status(404).json({error: "Car not found!"})
-	}
-	
-	if(make !== undefined) car.make = make;
-	if(model !== undefined) car.model = model;
-	if(year !== undefined) car.year = year;
-	
-	res.json(car);
-
-    //curl -X PATCH http://localhost:3000/cars/3 -H "Content-Type:application/json" -d '{"model":"RX-7 FC","year":1991}'
-})
-
-app.delete("/cars/:id", (req: Request, res: Response) => {
+app.patch("/cars/:id", async (req: Request, res: Response) => {
 	const id = parseInt(req.params.id);
-	const pos = cars.findIndex(c => c.id === id);
-	
-	if(pos === -1){
-		return res.status(404).json({error: "Car not found"});
-	}
+	const {make, model, year} = req.body;
 
-	cars.splice(pos, 1);
-	return res.status(204).send();
-    //curl -X DELETE http://localhost:3000/cars/3 -H "Content-Type:application/json"
+	const data: { make?: string; model?: string , year?: number} = {};
+
+	if (make !== undefined) data.make = make;
+	if (model !== undefined) data.model = model;
+	if (year !== undefined) data.year = Number(year);
+
+	try {
+		const updatedCar = await prisma.cars.update({where: { id }, data});
+
+    	res.json(updatedCar);
+	} catch {
+		return res.status(404).json({ error: "Car not found" });
+	}
 });
 
-// Den Server starten
+app.delete("/cars/:id", async (req: Request, res: Response) => {
+	const id = parseInt(req.params.id);
+
+	try {
+
+		await prisma.cars.delete({where: { id }});
+    	return res.status(204).send(); // No Content
+
+	} catch {
+		return res.status(404).json({ error: "Car not found" });
+	}
+});
+
 app.listen(port, () => {
   console.log(`JDMDealership-Server läuft auf http://localhost:${port}`);
 });
