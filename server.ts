@@ -8,8 +8,6 @@ import accounts from "./accounts.json" with { type: "json"};
 import session from "express-session";
 import { authMiddleware } from "./auth.ts";
 
-
-
 const __dirname = dirname(fromFileUrl(import.meta.url));
 const app = express();
 const port = process.env.PORT || 3000;
